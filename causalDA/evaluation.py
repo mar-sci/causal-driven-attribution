@@ -10,7 +10,7 @@ from sklearn.metrics import roc_auc_score, confusion_matrix, fbeta_score
 from reproduce.utils.config import ACTIVITY_NAME, TARGET_NODE
 from reproduce.utils.helpers import snake_case
 
-from gadjid import ancestor_aid, oset_aid, parent_aid, shd, sid
+from gadjid import shd, sid
 
 
 def dict_to_binary_matrix(pred_dict: Dict[str, Dict[str, Any]], node_lookup: Dict[int, str]) -> np.ndarray:
@@ -66,7 +66,7 @@ def evaluate_binary(truth_matrix: np.ndarray, pred_matrix: np.ndarray, beta: flo
     -------
     dict
         Dictionary with evaluation metrics:
-        {"sid", "shd", "ancestor_aid", "oset_aid", "parent_aid", "AUC", "FPR", "TPR", "F{beta}"}.
+        {"sid", "shd", "AUC", "FPR", "TPR", "F{beta}"}.
     """
     N = truth_matrix.shape[0]
     select_off_diagonal = (np.identity(N) == 0)
@@ -80,9 +80,6 @@ def evaluate_binary(truth_matrix: np.ndarray, pred_matrix: np.ndarray, beta: flo
     # Distance-based metrics
     sid_score,_ = sid(G_true, G_pred, edge_direction="from row to column")
     shd_score,_ = shd(G_true, G_pred)
-    ancestor_aid_score,_ = ancestor_aid(G_true, G_pred, edge_direction ="from row to column")
-    oset_aid_score,_ = oset_aid(G_true, G_pred, edge_direction="from row to column")
-    parent_aid_score,_ = parent_aid(G_true, G_pred, edge_direction="from row to column")
 
     # Classification-based metrics
     auc = roc_auc_score(y_true, y_pred)
@@ -94,9 +91,6 @@ def evaluate_binary(truth_matrix: np.ndarray, pred_matrix: np.ndarray, beta: flo
     return {
         "sid": float(sid_score),
         "shd": float(shd_score),
-        "ancestor_aid": float(ancestor_aid_score),
-        "oset_aid": float(oset_aid_score),
-        "parent_aid": float(parent_aid_score),
         "AUC": float(auc),
         "FPR": float(fpr),
         "TPR": float(tpr),
@@ -201,6 +195,19 @@ def compute_causal_effects(links_dict, outcome='conversion'):
     return direct_effect, total_effect
 
 def calculate_causal_effect_per_unit(conversion_drop: float, channel_series: pd.Series) -> float:
+    """
+    Calculate the causal effect per unit change in a marketing channel.
+    Parameters
+    ----------
+    conversion_drop : float
+        The observed drop in conversions.
+    channel_series : pd.Series
+        Time series data for the marketing channel.
+    Returns
+    -------
+    float
+        Causal effect per unit change in the marketing channel.
+    """
     mean_input = channel_series.mean()
     if mean_input == 0:
         raise ValueError("Mean of channel is zero; can't divide by zero.")

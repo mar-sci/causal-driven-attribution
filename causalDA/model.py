@@ -2,16 +2,6 @@ import numpy as np
 import pandas as pd
 from typing import List, Dict, Any, Optional
 
-# try:
-#     from tigramite import data_processing as pp
-#     from tigramite.independence_tests import ParCorr, RobustParCorr
-#     from tigramite.pcmci import PCMCI
-# except ImportError:
-#     raise ImportError(
-#         "Tigramite is required for this module. Install with:\n"
-#         "    pip install tigramite"
-#     )
-
 from tigramite import data_processing as pp
 from tigramite.independence_tests.parcorr import ParCorr
 from tigramite.independence_tests.robust_parcorr import RobustParCorr
@@ -358,6 +348,25 @@ class CausalModel:
         target: str = "conversion",
         n_runs: int = 5000
     ) -> float:
+        """
+        Estimate conversion drop by performing repeated interventional sampling.
+        Parameters
+        ----------
+        scm : dowhy.gcm.CausalModel
+            The structural causal model.
+        data : pd.DataFrame
+            Observed data for conditioning.
+        channel : str
+            The marketing channel to intervene on.
+        target : str, default='conversion'
+            The outcome variable.
+        n_runs : int, default=5000
+            Number of repeated sampling runs.
+        Returns
+        -------
+        float
+            Estimated average conversion drop.
+        """
         drops = []
         for _ in range(n_runs):
             baseline = gcm.interventional_samples(scm, {}, observed_data=data)

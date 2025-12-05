@@ -1,4 +1,10 @@
 # utils/config.py
+"""
+Configuration constants for causalDA project.
+
+Author: Boi Mai Quach <quachmaiboi.com>
+License: GNU General Public License v3.0
+"""
 
 import numpy as np
 

@@ -12,6 +12,16 @@ OUTPUT_DIR = "reproduce/results/data/"
 
 
 def main():
+    """
+    Generate synthetic datasets and save to disk.
+    For each random seed in the specified range, this function:
+    1. Initializes a DataGenerator with the given configuration.
+    2. Generates a random DAG structure.
+    3. Samples a random conversion dictionary.
+    4. Generates synthetic time series data based on the DAG and conversion dict.
+    5. Saves the generated graph, data, links_dict, and conversion_dict to a
+    """
+
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     for seed in tqdm(range(config.N_SEEDS), desc="Generating datasets", unit="run"):

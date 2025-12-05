@@ -85,6 +85,21 @@ class DataGenerator:
         self.graph: Optional[np.ndarray] = None
 
     def generate_random_dag(self, edge_prob: Optional[float] = None) -> np.ndarray:
+        """
+        Generate a random directed acyclic graph (DAG) as an adjacency matrix.
+        Parameters
+        ----------
+        edge_prob : float in [0, 1]
+            Probability of edge creation between nodes (except to target_node).
+        Returns
+        -------
+        np.ndarray
+            Adjacency matrix (n_nodes x n_nodes) with directed edges encoded as 1.0.
+        Raises
+        ------
+        DataGenerationError
+            If `edge_prob` is not provided or invalid.
+        """
         np.random.seed(self.seed)
         if edge_prob is None:
             raise DataGenerationError(
@@ -114,6 +129,21 @@ class DataGenerator:
         return graph
 
     def _topological_sort(self, adj: np.ndarray) -> List[int]:
+        """
+        Perform topological sort on the DAG represented by the adjacency matrix.
+        Parameters
+        ----------
+        adj : np.ndarray
+            Adjacency matrix of the DAG.
+        Returns
+        -------
+        List[int]
+            List of node indices in topological order.
+        Raises
+        ------
+        DataGenerationError
+            If the graph contains a cycle.
+        """
         indegree = np.sum(adj, axis=0)
         queue = deque([i for i in range(len(indegree)) if indegree[i] == 0])
         order = []
@@ -138,7 +168,30 @@ class DataGenerator:
         time_periods: Optional[int] = None,
         base_range: Optional[Tuple[float, float]] = None,
         carryover: bool = False,
-    ) -> pd.DataFrame:
+        ) -> pd.DataFrame:
+        """
+        Generate synthetic time series data based on the DAG structure.
+        Parameters
+        ----------
+        influence_from_parents : tuple(float, float)
+            Min and max influence coefficients from parent nodes.
+        conversion_dict : dict[str, float]
+            Mapping of channel names to conversion rates.
+        time_periods : int
+            Number of time periods to simulate.
+        base_range : tuple(float, float)
+            Min and max base values for node generation.
+        carryover : bool
+            Whether to apply carryover effects using adstock transformation.
+        Returns
+        -------
+        pd.DataFrame
+            Synthetic dataset with one column per node and one row per time step.
+        Raises
+        ------
+        DataGenerationError
+            If required parameters are missing or invalid.
+        """
         
         np.random.seed(self.seed)
 

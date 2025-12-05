@@ -11,7 +11,7 @@ from causalDA.evaluation import (
     save_evaluation_results,
 )
 from reproduce.utils.config import ACTIVITY_NAME, BETA, NODE_LOOKUP, PC_ALPHA, ALPHA_LEVEL, TARGET_NODE
-from reproduce.utils.helpers import snake_case
+from reproduce.utils.helpers import snake_case, str2bool
 
 
 def run_experiment(seed: int, tau: int, priority_flag=False) -> dict:
@@ -47,6 +47,8 @@ def run_experiment(seed: int, tau: int, priority_flag=False) -> dict:
     dict
         Dictionary containing evaluation metrics, e.g.:
         {
+            "shd": float,
+            "sid": float,
             "AUC": float,
             "FPR": float,
             "TPR": float,
@@ -137,7 +139,12 @@ def main():
     parser.add_argument("--seed_max", type=int, required=True, help="Maximum random seed index")
     parser.add_argument("--tau_min", type=int, default=1, help="Minimum tau")
     parser.add_argument("--tau_max", type=int, default=30, help="Maximum tau")
-    parser.add_argument("--priority", action="store_true", help="Whether to use priority pruning to the target node")
+    parser.add_argument(
+        "--priority",
+        type=str2bool,
+        default=False,
+        help="Whether to use priority pruning to the target node (True/False)"
+    )
     args = parser.parse_args()
 
     print(f"Running experiments for seeds {args.seed_min}..{args.seed_max}, "

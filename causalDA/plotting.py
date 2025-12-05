@@ -4,8 +4,6 @@
 #
 # License: GNU General Public License v3.0
 
-# plotting.py
-
 import matplotlib.pyplot as plt
 import networkx as nx
 
@@ -113,7 +111,7 @@ def plot_links_graph_svg(
 
             dot.node(source)
             label = f"{round(value, rounding)}" if show_value else ""
-            color = "green" if value > 0 else "red"
+            color = "green" if value >= 0 else "red"
             dot.edge(source, target, label=label, color=color)
 
     # --- Legend as HTML-like node ---

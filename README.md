@@ -158,34 +158,168 @@ After the simulation, the generated data will be saved in `reproduce/results/dat
 ### Causal DAG Discovery
 
 #### Choice of time lag
-The choice of time lag in PCMCI determines how far back in time the algorithm looks to identify causal relationships between time series variables. Selecting an appropriate lag is important for producing meaningful and computationally feasible causal models. In marketing, incrementality lift tests are commonly used to measure causal impact, meaning they help determine what actually caused a change in performance. If $\tau_{\max}$ is set too small, the algorithm may miss true causal effects that occur at longer lags, resulting in incomplete or misleading causal graphs. On the other hand, setting $\tau_{\max}$ too large increases the number of lagged variables under consideration, which may slow down computation. In marketing dynamics, incrementality lift tests are often run over short windows such as 7, 14, or 30 days. In this section, we run experiments using 1,000 random samples and vary $\tau_{\max}$ from 0 to 59 to determine the optimal lag range for causal discovery in this context.
+The choice of time lag in PCMCI determines how far back in time the algorithm looks to identify causal relationships between time series variables. Selecting an appropriate lag is important for producing meaningful and computationally feasible causal models. In marketing, incrementality lift tests are commonly used to measure causal impact, meaning they help determine what actually caused a change in performance. If $\tau_{\max}$ is set too small, the algorithm may miss true causal effects that occur at longer lags, resulting in incomplete or misleading causal graphs. On the other hand, setting $\tau_{\max}$ too large increases the number of lagged variables under consideration, which may slow down computation. In this section, we run experiments using 1,000 random samples and vary $\tau_{\max}$ from 0 to 60 to determine the optimal lag range for causal discovery in this context.
 
-* **Running Experiments**: To re-run the experiment, please run this command
-
+#### Running Experiments 
+To re-run the experiment, please run this command
 ```
-python -m reproduce.run_experiment --seed_min=0 --seed_max=999 --tau_min=0 --tau_max=59
+python -m reproduce.run_experiment --seed_min=0 --seed_max=999 --tau_min=0 --tau_max=60 --priority=False
 ```
-**Note**: You can modify the values depending on your study.
 
-After running the experiment, the outcomes will be saved in `reproduce/results/eval`.
+About the --priority Flag
 
-* **Evaluation**: To evaluate the causal graph discovery results, please refer to `run_evaluation.ipynb` to see the evaluation metric scores (AUC, TPR, FPR, and F0.5) for 1,000 predicted causal DAGs.
+`--priority=False (default):`
+No prioritization is applied when evaluating candidate causal parents. All nodes are treated equally during causal discovery.
+
+`--priority=True:`
+Gives higher weight to edges directed toward the target node, effectively prioritizing causal detection for that variable.
+
+This option is useful when the research focus is specifically on improving the accuracy of causal discovery for a designated outcome variable.
+
+In this study, we used the **default setting** `--priority=False`, meaning no prioritization was applied.
+
+
+#### Evaluation
+
+To evaluate the causal graph discovery results (including optimal lag selection), open and run:
+
+```console
+run_evaluation.ipynb
+```
+
+This notebook provides evaluation metrics for all 1,000 predicted causal DAGs, including:
+
+* SHD (Structural Hamming Distance)
+
+* SID (Structural Intervention Distance)
+
+* AUC (Area Under the ROC Curve)
+
+* TPR (True Positive Rate)
+
+* FPR (False Positive Rate)
+
+* F0.5 (Precision-weighted F-score)
 
 
 ### Causal Effect Estimation
 
-
 #### Sample Examples
-Please refer to the paper to get the explanation about the suitable $\tau_{\max} = 30$ can be used for our CDA model. Now, the instructions below will show us how to 
+Please refer to the paper for a detailed explanation of why we set  
+$\tau_{\max}=45$ as the appropriate maximum time lag for our CDA model.
+
+To estimate causal effects for **a single simulated dataset**, explore the example notebooks located in the `examples/` directory:
+
+```
+examples/
+│
+├── example_simulation.ipynb
+└── example_causal_driven_attribution.ipynb
+```
+
+- **`example_simulation.ipynb`**  
+  Allows you to generate any synthetic dataset based on the structural model described in the paper.
+
+- **`example_causal_driven_attribution.ipynb`**  
+  Demonstrates how to apply the full CDA workflow to compute causal effect estimates for the generated sample.
+
+These notebooks walk through the complete pipeline from data generation to causal discovery and causal effect estimation, enabling you to reproduce or extend the experimental results. The figure below shows the example's result.
+
+<div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+
+  <figure style="text-align: center; flex: 1 1 400px; max-width: 500px;">
+    <img src="photo/cda_true_dag.png" style="width: 100%; height: auto;" draggable="false" />
+    <figcaption>Fig. 5: CDA result on True Causal Graph.</figcaption>
+  </figure>
+
+  <figure style="text-align: center; flex: 1 1 400px; max-width: 500px;">
+    <img src="photo/cda_predicted_dag.png" style="width: 100%; height: auto;" draggable="false" />
+    <figcaption>Fig. 6: CDA result on Predicted Causal Graph.</figcaption>
+  </figure>
+
+</div>
 
 
+#### Multiple sample estimation
 
-#### Mutilple sample
+To run the full multi-simulation experiment for the Causal-Driven Attribution (CDA) model, run:
+
+```bash
+python -m reproduce.run_cda_multi_simulation --num_per_layers=[N] --priority=[True/False] --tau_max=[T]
+```
+
+**Parameter Description**
+
+* `--num_per_layers=[N]`
+Specifies the number of synthetic samples to generate for each DAG depth (from 2 to 6 layers).
+For example, N=200 generates 200 datasets per depth.
+
+* `--priority=[True/False]`
+Determines whether PCMCI prioritizes edges pointing to the target node during causal discovery.
+
+* * `True`: prioritization enabled
+
+* * `False`: no prioritization (default)
+
+* `--tau_max=[T]`
+Maximum time lag considered in causal discovery using PCMCI. Set T according to your data's temporal structure.
+
+Example,
+
+```bash
+python -m reproduce.run_cda_multi_simulation --num_per_layers=200 --priority=True --tau_max=45
+```
+
+**Note:** Use this script when you want to reproduce the large-scale benchmarking experiment reported in the paper.
+
+This command generates synthetic datasets and evaluates the CDA framework across a range of causal structures. For each DAG layer from two to six layers, the script creates 200 samples per layer, applies PCMCI for causal discovery (with $\tau_{\max}=45$), and estimates causal effects using our causal effect.
+
+The output is a dictionary containing, for each simulation seed:
+
+* The number of causal layers (n_layers)
+
+* The layered DAG structure (layers)
+
+* Evaluation metrics under the true DAG: Relative RMSE, MAPE, Spearman correlation
+
+* Evaluation metrics under the predicted DAG: Relative RMSE, MAPE, Spearman correlation
+
+All results are stored in: `reproduce/results/eval`
+
+#### Evaluating Multi-Sample Results
+
+After running the multi-simulation experiment, you can summarize and analyze the full set of results using `reproduce/evaluate_multi_sample.ipynb`.
 
 
+This notebook performs the following tasks:
 
+- **Aggregates results** from all simulated datasets across varying DAG depths.  
+- **Compares the performance of CDA** when using:
+  - the **true causal graph**, and  
+  - the **predicted causal graph** obtained through PCMCI.
+- **Evaluates differences across causal layer depths** (e.g., from 2 to 6 layers), showing how structural complexity affects estimation accuracy.
+- **Computes summary statistics** such as mean and standard deviation for key metrics (RRMSE, MAPE, Spearman correlation).
+- **Visualizes performance trends**, helping users understand how CDA behaves under different causal structures.
 
+Use this notebook to reproduce the main benchmarking analysis reported in the paper and to inspect how the model performs across a broad range of synthetic causal environments.
 
+# More Information & Resources
+If you find this CDA useful for your work, please cite our paper:
+
+## Citation
+```console
+To be updated upon publication.
+```
+
+## Issues
+If you encounter an issue or have a specific request for CDA, please raise an issue.
+
+## Contributing
+This project welcomes contributions and suggestions. For a guide to contributing and a list of all contributors, check out [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Contact 
+- Georgios Filippou (Marsci, info@mar-sci.com)
+- Boi Mai Quach (Marsci, boi@mar-sci.com)
 
 
 
