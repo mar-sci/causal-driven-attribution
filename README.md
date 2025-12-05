@@ -228,12 +228,12 @@ These notebooks walk through the complete pipeline from data generation to causa
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
 
   <figure style="text-align: center; flex: 1 1 300px; max-width: 400px;">
-    <img src="photo/cda_true_dag.png" style="width: 100%; height: auto;" draggable="false" />
+    <img src="photo/dag_prediction.png" style="width: 100%; height: auto;" draggable="false" />
     <figcaption>Fig. 5: CDA result on True Causal Graph.</figcaption>
   </figure>
 
   <figure style="text-align: center; flex: 1 1 300px; max-width: 400px;">
-    <img src="photo/cda_predicted_dag.png" style="width: 100%; height: auto;" draggable="false" />
+    <img src="photo/cda_result.png" style="width: 100%; height: auto;" draggable="false" />
     <figcaption>Fig. 6: CDA result on Predicted Causal Graph.</figcaption>
   </figure>
 
