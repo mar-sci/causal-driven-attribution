@@ -56,7 +56,7 @@ cd <repo-name>
 ```bash
 git checkout -b feature/<your-feature-name>
 ```
-# or
+or
 ```bash
 git checkout -b fix/<bug-description>
 ```
@@ -71,7 +71,7 @@ git commit -m "Describe your change here"
 ```bash
 git push origin feature/<your-feature-name>
 ```
-# or
+or
 ```bash
 git push origin fix/<bug-description>
 ```
