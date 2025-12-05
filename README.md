@@ -1,3 +1,6 @@
+![GitHub all releases](https://img.shields.io/github/downloads/<USER>/<REPO>/total.svg)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=<USER>.<REPO>)
+
 <p align = "center" draggable=”false” ><img src="photo/cda_logo.png" 
      width="300px"
      height="auto"/>
