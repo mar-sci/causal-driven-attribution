@@ -1,4 +1,4 @@
-![GitHub all releases](https://img.shields.io/github/downloads/mar-sci/causal-driven-distribution/total.svg)
+![GitHub all releases](https://img.shields.io/github/downloads/mar-sci/causal-driven-attribution/total.svg)
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=<USER>.<REPO>)
 
 <p align = "center" draggable=”false” ><img src="photo/cda_logo.png" 
