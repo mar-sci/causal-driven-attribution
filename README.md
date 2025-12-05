@@ -223,7 +223,7 @@ examples/
 - **`example_causal_driven_attribution.ipynb`**  
   Demonstrates how to apply the full CDA workflow to compute causal effect estimates for the generated sample.
 
-These notebooks walk through the complete pipeline from data generation to causal discovery and causal effect estimation, enabling you to reproduce or extend the experimental results. The figure below shows the example's result.
+These notebooks walk through the complete pipeline from data generation to causal discovery and causal effect estimation, enabling you to reproduce or extend the experimental results. The figure below shows the example's results related to causal DAG and CDA.
 
 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
 
