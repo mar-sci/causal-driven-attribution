@@ -49,9 +49,9 @@ git clone https://github.com/mar-sci/causal-driven-attribution.git
 ```
 
 ### Initialise the environment
-After cloning repository github, going to the main folder `causal_driven_attribution`
+After cloning repository github, going to the main folder `causal-driven-attribution`
 ```bash
-cd causal_driven_attribution
+cd causal-driven-attribution
 ```
 and do the steps as follows
 
