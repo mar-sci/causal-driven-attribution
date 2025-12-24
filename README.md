@@ -46,11 +46,14 @@ We provide an open-source Python package that allows users to simulate data from
 
 ```bash
 git clone https://github.com/mar-sci/causal-driven-attribution.git
-cd causal_driven_attribution
 ```
 
 ### Initialise the environment
-After cloning repository github, going to the main folder `causal_driven_attribution` and do the steps as follows
+After cloning repository github, going to the main folder `causal_driven_attribution`
+```bash
+cd causal_driven_attribution
+```
+and do the steps as follows
 
 1. If you have not installed Python, please install it first:
 
