@@ -45,7 +45,7 @@ We provide an open-source Python package that allows users to simulate data from
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/Tayerquach/causal_driven_attribution.git
+git clone https://github.com/mar-sci/causal-driven-attribution.git
 cd causal_driven_attribution
 ```
 
